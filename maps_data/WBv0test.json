@@ -1,0 +1,40 @@
+{
+  "new_player": {
+    "pos": ["start", 0],
+    "inventory": []
+  },
+  "scenes": {
+    "start": {
+      "text": [
+        "Прiвет iроды",
+        "Самое время Suck dick",
+        "Сосалi?"
+      ],
+      "links": [
+        {
+          "text":  "YESSIR",
+          "scene": "dungeon"
+        },
+        {
+          "text":  "Fuck you",
+          "scene": "start"
+        }
+      ]
+    },
+    "dungeon": {
+      "text": [
+        "go back nigga"
+      ],
+      "links": [
+        {
+          "text": "No, I'm stayin'",
+          "scene": "dungeon"
+        },
+        {
+          "text": "alr man",
+          "scene": "start"
+        }
+      ]
+    }
+  }
+}
