@@ -30,6 +30,7 @@ def get_user(user_id, to_format=False):
         }
     return user_data
 
+
 def update_user(user_id, user_data):
     user = get_user(user_id)
     user.scene = user_data['pos'][0]
@@ -37,6 +38,12 @@ def update_user(user_id, user_data):
     user.inventory = json.dumps(user_data['inventory'])
     with Session() as session:
         session.commit()
+        print("User[{}] updated to {}".format(user_id, get_user(user_id, True)))
+
+
+def delete_user(user_id):
+    with Session() as session:
+        session.delete(user_id)
 
 
 def run():
@@ -45,9 +52,7 @@ def run():
 
 if __name__ == "__main__":
     run()
-    add_user(0, 'MiniVan', {
-        "pos": ["start", 0],
-        "inventory": []
-    })
-    print(get_user(0, True))
+    user = get_user(0, True)
+    print(user)
     print(get_user(1))
+    update_user(0, {"pos": [user["pos"][0], user["pos"][1] + 1], "inventory":user["inventory"]})
