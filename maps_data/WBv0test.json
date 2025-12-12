@@ -1,8 +1,23 @@
 {
   "new_player": {
     "pos": ["start", 0],
-    "inventory": []
+    "meta": {},
+    "inventory": {
+      "toilet_paper": 1024
+    }
   },
+  "items": [
+    {
+      "ItemID": "max",
+      "Name": "Мессенджер Макс",
+      "MaxAmount": 1
+    },
+    {
+      "ItemID": "toilet_paper",
+      "Name": "Рулон туалетки со времён ковида",
+      "MaxAmount": null
+    }
+  ],
   "scenes": {
     "start": {
       "text": [
@@ -18,7 +33,7 @@
         },
         {
           "text":  "Спасибо",
-          "scene": "start"
+          "scene": "dungeon"
         }
       ]
     },
@@ -31,11 +46,34 @@
       "links": [
         {
           "text": "Нет",
-          "scene": "dungeon"
+          "scene": "dungeon",
+          "check_inv": [
+            {
+              "ItemID": "max",
+              "amount": "=0"
+            }
+          ],
+          "execute": [
+            {
+              "command": "add_item",
+              "ItemID": "max"
+            },
+            {
+              "command": "text",
+              "text": "Вам весьма демократичным методом установили макс"
+            }
+          ]
+
         },
         {
           "text": "Это же лучший мессенджер!",
-          "scene": "start"
+          "scene": "start",
+          "check_inv": [
+            {
+              "ItemID": "max",
+              "amount": "=1"
+            }
+          ]
         }
       ]
     }

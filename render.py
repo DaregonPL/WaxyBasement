@@ -1,4 +1,5 @@
-from engine import Engine, init_db
+from engine import Engine
+from progress.interface import run as init_db
 from os import path
 from os import mkdir
 import json
@@ -17,16 +18,24 @@ class ConsoleRenderer:
         init_db()
         data = self.engine.process(self.player, '')
         fwd: bool = True
-        print("type \".\" to change chronology")
+        print("type \".\" to change chronology, \"inv\" to show inventory or \"..\" to get in the start of scene")
         while True:
             actions = data['actions']
+            action = ''
+            print(actions)
             usr = [act for act in actions if act[0] == 'user']
             if usr:
                 print("Type number or \".\"" if ('system', 'prev') in actions else "Type number")
                 for i in range(0, len(usr)):
                     print('{}. {}'.format(i + 1, usr[i][1]))
                 ans = input(data['text'])
-                if ans == '.' and ('system', 'prev') in actions:
+                if ans == 'inv':
+                    for slot in self.engine.get_inventory(self.player, True):
+                        print(f' |{slot[0]}: {slot[1]}')
+                    continue
+                if ans == '..':
+                    action = ('absolute_navigation', 'scene_top')
+                elif ans == '.' and ('system', 'prev') in actions:
                     action = ('system', 'prev')
                     fwd = False
                     print('Chronology: INVERTED')
@@ -36,6 +45,10 @@ class ConsoleRenderer:
                     continue
             else:
                 ans = input(data['text'])
+                if ans == 'inv':
+                    for slot in self.engine.get_inventory(self.player, True):
+                        print(f' |{slot[0]}: {slot[1]}')
+                    continue
                 if ans == '.':
                     fwd = not fwd
                     print('Chronology: {}'.format("STRAIGHT" if fwd else "INVERTED"))
@@ -44,6 +57,8 @@ class ConsoleRenderer:
                         print('Chronology: STRAIGHT')
                     fwd = True
                 action = ('system', 'prev' if not fwd else 'next')
+                if ans == '..':
+                    action = ('absolute_navigation', 'scene_top')
             data = self.engine.process(self.player, action)
 
 

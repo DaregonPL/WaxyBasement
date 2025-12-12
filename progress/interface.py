@@ -9,6 +9,7 @@ def add_user(user_id, name, user_data):
         name=name,
         scene=user_data['pos'][0],
         page=user_data['pos'][1],
+        player_meta=json.dumps(user_data['meta']),
         inventory=json.dumps(user_data['inventory'])
     )
     with Session() as session:
@@ -26,19 +27,21 @@ def get_user(user_id, to_format=False):
                 user_data.scene,
                 user_data.page
             ],
+            "meta": json.loads(user_data.player_meta),
             "inventory": json.loads(user_data.inventory)
         }
     return user_data
 
 
 def update_user(user_id, user_data):
-    user = get_user(user_id)
-    user.scene = user_data['pos'][0]
-    user.page = user_data['pos'][1]
-    user.inventory = json.dumps(user_data['inventory'])
     with Session() as session:
+        user_object = session.get(User, user_id)
+        user_object.scene = user_data['pos'][0]
+        user_object.page = user_data['pos'][1]
+        user_object.player_meta = json.dumps(user_data['meta'])
+        user_object.inventory = json.dumps(user_data['inventory'])
         session.commit()
-        print("User[{}] updated to {}".format(user_id, get_user(user_id, True)))
+        #print("User[{}] updated to {}".format(user_id, get_user(user_id, True)))
 
 
 def delete_user(user_id):
@@ -55,4 +58,4 @@ if __name__ == "__main__":
     user = get_user(0, True)
     print(user)
     print(get_user(1))
-    update_user(0, {"pos": [user["pos"][0], user["pos"][1] + 1], "inventory":user["inventory"]})
+    update_user(0, {"pos": [user["pos"][0], user["pos"][1] + 1], "inventory":user["inventory"], "meta": user["meta"]})

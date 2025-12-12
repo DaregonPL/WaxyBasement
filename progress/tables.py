@@ -22,6 +22,9 @@ class User(Base):
         Integer,
         nullable=False
     )
+    player_meta = Column(
+        String(length=4096)
+    )
     inventory = Column(
         String(length=4096)
     )
