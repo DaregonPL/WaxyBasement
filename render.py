@@ -22,7 +22,6 @@ class ConsoleRenderer:
         while True:
             actions = data['actions']
             action = ''
-            print(actions)
             usr = [act for act in actions if act[0] == 'user']
             if usr:
                 print("Type number or \".\"" if ('system', 'prev') in actions else "Type number")
@@ -43,6 +42,9 @@ class ConsoleRenderer:
                     action = usr[int(ans) - 1]
                 else:
                     continue
+            elif len(actions) == 1 and actions[0][0] == 'absolute_navigation':
+                input(data['text'])
+                action = actions[0]
             else:
                 ans = input(data['text'])
                 if ans == 'inv':
