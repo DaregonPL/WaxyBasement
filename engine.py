@@ -118,7 +118,6 @@ class Engine:
         if scene_prog == len(text) - 1:
             inv = self.get_inventory(player)
             for link in self.map['scenes'][scene]['links']:
-                print(link)
                 if "check_inv" in link and not all([check_req(req, inv) for req in link["check_inv"]]):
                     print('rejected')
                     continue
