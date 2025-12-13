@@ -58,9 +58,17 @@ class ConsoleRenderer:
                     if not fwd:
                         print('Chronology: STRAIGHT')
                     fwd = True
+
                 action = ('system', 'prev' if not fwd else 'next')
                 if ans == '..':
                     action = ('absolute_navigation', 'scene_top')
+                if ('system', 'next') not in actions:
+                    action = ()
+                    for action in actions + [action]:
+                        if action[0] == 'absolute_navigation':
+                            break
+                    if not action:
+                        raise Exception(f'RendererError: cannot display actions: {actions}')
             data = self.engine.process(self.player, action)
 
 

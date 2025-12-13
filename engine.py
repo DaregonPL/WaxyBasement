@@ -97,9 +97,11 @@ class Engine:
                 elif command == 'clear_item':
                     if cmd["ItemID"] in inv:
                         if cmd["clear_num"] is None:
-                            inv[cmd["ItemID"]] = 0
+                            inv.pop(cmd["ItemID"])
                         else:
                             inv[cmd["ItemID"]] = max(0, inv[cmd["ItemID"]] - cmd["clear_num"])
+                            if not inv[cmd["ItemID"]]:
+                                inv.pop(cmd["ItemID"])
                 self.update_inventory(player, inv)
             elif command == 'text':
                 text = cmd['text']
@@ -116,10 +118,13 @@ class Engine:
         if scene_prog < len(text) - 1:
             actions.append(('system', 'next'))
         if scene_prog == len(text) - 1:
+            if 'auto' in self.map['scenes'][scene]:
+                actions.append(('absolute_navigation', 'direct',
+                    self.map['scenes'][scene]['auto'], 0))
+                return actions
             inv = self.get_inventory(player)
             for link in self.map['scenes'][scene]['links']:
                 if "check_inv" in link and not all([check_req(req, inv) for req in link["check_inv"]]):
-                    print('rejected')
                     continue
                 actions.append(('user', link['text']))
         return actions
@@ -162,6 +167,7 @@ class Engine:
                     "actions": [('absolute_navigation', 'direct', link['scene'], 0)]
                 }
             else:
+                progress = get_user(player, True)
                 progress['pos'] = [link['scene'], 0]
                 update_user(player, progress)
 
